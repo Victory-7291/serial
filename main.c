@@ -1,12 +1,12 @@
 /**
  * @file main.c
- * @brief ´®¿ÚÍ¨ĞÅÄ£¿éÑİÊ¾³ÌĞò
+ * @brief ä¸²å£é€šä¿¡æ¨¡å—æ¼”ç¤ºç¨‹åº
  */
 
 #include <ioCC2530.h>
 #include "uart.h"
 
-// ÉùÃ÷ process_data º¯Êı
+// å£°æ˜ process_data å‡½æ•°
 void process_data(uint8_t data);
 
 void delay(uint32_t ms)
@@ -20,44 +20,56 @@ void delay(uint32_t ms)
 
 int main(void)
 {
-    // ³õÊ¼»¯´®¿Ú£¬ÉèÖÃ²¨ÌØÂÊÎª 115200
+    // åˆå§‹åŒ–ä¸²å£ï¼Œè®¾ç½®æ³¢ç‰¹ç‡ä¸º 115200
     uart_init(UART_BAUD_115200);
+    
+    // å‘é€å¯åŠ¨æ¶ˆæ¯
+    uart_tx_str("\r\nUART Demo Started!\r\n", 21);
+    uart_tx_str("Baudrate: 115200\r\n", 18);
 
     while (1)
     {
-        // ·¢ËÍ×Ö·û´®
-        uart_tx_str("Hello, UART!\r\n", 13);
+        // å‘é€å­—ç¬¦ä¸²
+        uart_tx_str("Hello, UART!\r\n", 14);
 
-        // ·¢ËÍÕûÊı
+        // å‘é€æ•´æ•°
         int32_t num = 12345;
+        uart_tx_str("Int: ", 5);
         uart_tx_int(num);
+        uart_tx_str("\r\n", 2);
 
-        // ·¢ËÍ¸¡µãÊı
+        // å‘é€æµ®ç‚¹æ•°
         float f = 3.14159;
+        uart_tx_str("Float: ", 7);
         uart_tx_float(f);
+        uart_tx_str("\r\n", 2);
 
-        // ÑÓÊ± 1 Ãë
+        // ç­‰å¾…1ç§’
         delay(1000);
 
-        // ¼ì²éÊÇ·ñÓĞĞÂÊı¾İµ½´ï
+        // æ£€æŸ¥æ˜¯å¦æœ‰æ•°æ®åˆ°æ¥
         if (uart_has_new_data())
         {
-            // »ñÈ¡×îĞÂÊı¾İ
+            // è·å–æ¥æ”¶æ•°æ®
             uint8_t data = uart_get_latest_data();
-            uart_reset_new_data_flag(); // ÖØÖÃĞÂÊı¾İ±êÖ¾
+            uart_reset_new_data_flag(); // æ¸…é™¤æ¥æ”¶æ•°æ®æ ‡å¿—
+            
+            uart_tx_str("Received: ", 10);
+            uart_tx_byte(data);
+            uart_tx_str("\r\n", 2);
 
-            // ´¦ÀíÊı¾İ
+            // å¤„ç†æ•°æ®
             process_data(data);
         }
     }
 }
 
 /**
- * @brief ´¦Àí½ÓÊÕµ½µÄÊı¾İ
- * @param data ½ÓÊÕµ½µÄÊı¾İ
+ * @brief å¤„ç†æ¥æ”¶åˆ°çš„æ•°æ®
+ * @param data æ¥æ”¶åˆ°çš„æ•°æ®
  */
 void process_data(uint8_t data)
 {
-    // ÔÚÕâÀïÊµÏÖÊı¾İ´¦ÀíÂß¼­
-    uart_tx_byte(data); // »Ø´«Êı¾İ
+    // ç®€å•çš„æ•°æ®å¤„ç†é€»è¾‘
+    uart_tx_byte(data); // å›ä¼ æ•°æ®
 }

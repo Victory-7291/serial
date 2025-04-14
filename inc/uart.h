@@ -1,66 +1,66 @@
 /**
  * @file uart.h
- * @brief ´®¿ÚÍ¨ĞÅÄ£¿éÍ·ÎÄ¼ş
+ * @brief ä¸²å£é€šä¿¡æ¨¡å—å¤´æ–‡ä»¶
  */
 
 #ifndef __UART_H__
 #define __UART_H__
 
-#include <stdint.h> // °üº¬±ê×¼¿âÍ·ÎÄ¼ş
+#include <stdint.h> // æ ‡å‡†å¤´æ–‡ä»¶
 #include <ioCC2530.h>
 #include "uart_config.h"
 
 /**
- * @brief ³õÊ¼»¯´®¿Ú
- * @param baudrate ²¨ÌØÂÊ
+ * @brief åˆå§‹åŒ–ä¸²å£
+ * @param baudrate æ³¢ç‰¹ç‡
  */
 void uart_init(uart_baudrate_t baudrate);
 
 /**
- * @brief ·¢ËÍ×Ö½Ú
- * @param data Òª·¢ËÍµÄ×Ö½Ú
+ * @brief å‘é€å­—èŠ‚
+ * @param data è¦å‘é€çš„å­—èŠ‚
  */
 void uart_tx_byte(uint8_t data);
 
 /**
- * @brief ·¢ËÍ×Ö·û´®
- * @param data Òª·¢ËÍµÄ×Ö·û´®
- * @param length ×Ö·û´®³¤¶È
+ * @brief å‘é€å­—ç¬¦ä¸²
+ * @param data è¦å‘é€çš„å­—ç¬¦ä¸²
+ * @param length å­—ç¬¦ä¸²é•¿åº¦
  */
-void uart_tx_str(uint8_t *data, uint16_t length);
+void uart_tx_str(const uint8_t *data, uint16_t length);
 
 /**
- * @brief ·¢ËÍÕûÊı
- * @param data Òª·¢ËÍµÄÕûÊı
+ * @brief å‘é€æ•´æ•°
+ * @param data è¦å‘é€çš„æ•´æ•°
  */
 void uart_tx_int(int32_t data);
 
 /**
- * @brief ·¢ËÍ¸¡µãÊı
- * @param data Òª·¢ËÍµÄ¸¡µãÊı
+ * @brief å‘é€æµ®ç‚¹æ•°
+ * @param data è¦å‘é€çš„æµ®ç‚¹æ•°
  */
 void uart_tx_float(float data);
 
 /**
- * @brief ÉèÖÃ²¨ÌØÂÊ
- * @param baudrate ²¨ÌØÂÊ
+ * @brief è®¾ç½®æ³¢ç‰¹ç‡
+ * @param baudrate æ³¢ç‰¹ç‡
  */
 void uart_set_baud(uart_baudrate_t baudrate);
 
 /**
- * @brief »ñÈ¡×îĞÂ½ÓÊÕµ½µÄÊı¾İ
- * @return ×îĞÂ½ÓÊÕµ½µÄÊı¾İ
+ * @brief è·å–æœ€æ–°æ¥æ”¶çš„æ•°æ®
+ * @return æœ€æ–°æ¥æ”¶çš„æ•°æ®
  */
 uint8_t uart_get_latest_data(void);
 
 /**
- * @brief ¼ì²éÊÇ·ñÓĞĞÂÊı¾İµ½´ï
- * @return 1£ºÓĞĞÂÊı¾İ£»0£ºÎŞĞÂÊı¾İ
+ * @brief æ˜¯å¦æœ‰æ–°æ•°æ®åˆ°æ¥
+ * @return 1æœ‰ï¼Œ0æ²¡æœ‰
  */
 uint8_t uart_has_new_data(void);
 
 /**
- * @brief ÖØÖÃĞÂÊı¾İ±êÖ¾
+ * @brief æ¸…é™¤æ¥æ”¶æ ‡å¿—
  */
 void uart_reset_new_data_flag(void);
 

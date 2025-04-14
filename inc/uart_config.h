@@ -1,13 +1,13 @@
 /**
  * @file uart_config.h
- * @brief ´®¿ÚÅäÖÃÍ·ÎÄ¼ş
+ * @brief ä¸²å£é…ç½®å¤´æ–‡ä»¶
  */
 
 #ifndef __UART_CONFIG_H__
 #define __UART_CONFIG_H__
 
 /**
- * @brief ²¨ÌØÂÊÃ¶¾Ù
+ * @brief æ³¢ç‰¹ç‡æšä¸¾
  */
 typedef enum {
     UART_BAUD_9600     = 9600,
@@ -18,17 +18,17 @@ typedef enum {
 } uart_baudrate_t;
 
 /**
- * @brief Ä¬ÈÏ²¨ÌØÂÊ
+ * @brief é»˜è®¤æ³¢ç‰¹ç‡
  */
 #define UART_DEFAULT_BAUD UART_BAUD_115200
 
 /**
- * @brief ½ÓÊÕ»º³åÇø´óĞ¡
+ * @brief æ¥æ”¶ç¼“å†²åŒºå¤§å°
  */
 #define UART_RX_BUF_SIZE  128
 
 /**
- * @brief ·¢ËÍ»º³åÇø´óĞ¡
+ * @brief å‘é€ç¼“å†²åŒºå¤§å°
  */
 #define UART_TX_BUF_SIZE  128
 

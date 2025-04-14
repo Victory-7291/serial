@@ -1,73 +1,75 @@
 /**
  * @file uart.c
- * @brief ´®¿ÚÍ¨ĞÅÄ£¿éÊµÏÖÎÄ¼ş
+ * @brief ä¸²å£é€šä¿¡æ¨¡å—å®ç°æ–‡ä»¶
  */
 
 #include "uart.h"
 #include <string.h>
-#include <stdint.h> // °üº¬±ê×¼¿âÍ·ÎÄ¼ş
+#include <stdint.h> // æ ‡å‡†å¤´æ–‡ä»¶
 
 /**
- * @brief ×îĞÂ½ÓÊÕµ½µÄÊı¾İ
+ * @brief æœ€æ–°æ¥æ”¶çš„æ•°æ®
  */
 static volatile uint8_t latest_data = 0;
 /**
- * @brief ĞÂÊı¾İ±êÖ¾
+ * @brief æ•°æ®æ¥æ”¶æ ‡å¿—
  */
 static volatile uint8_t new_data_flag = 0;
 
 /**
- * @brief ³õÊ¼»¯´®¿Ú
- * @param baudrate ²¨ÌØÂÊ
+ * @brief åˆå§‹åŒ–ä¸²å£
+ * @param baudrate æ³¢ç‰¹ç‡
  */
 void uart_init(uart_baudrate_t baudrate)
 {
-    // ÉèÖÃÏµÍ³Ê±ÖÓÔ´Îª 32MHz ¾§Õñ
+    // è®¾ç½®ç³»ç»Ÿæ—¶é’Ÿæºä¸º32MHz
     CLKCONCMD &= ~0x40;
     while (CLKCONSTA & 0x40);
     CLKCONCMD &= ~0x47;
 
-    // ÉèÖÃ P0 ¿ÚµÄ P0_2 ºÍ P0_3 Îª UART0 ¹¦ÄÜ
-    PERCFG = 0x00;
-    P0SEL = 0x0C;
+    // è®¾ç½®P0çš„P0_2å’ŒP0_3ä¸ºUART0å¼•è„š
+    PERCFG = 0x00;       // å°†UART0è®¾ä¸ºå¯é€‰ä½ç½®1ï¼ˆP0.2-3ï¼‰
+    P0SEL |= 0x0C;       // è®¾ç½®P0.2å’ŒP0.3ä¸ºå¤–è®¾åŠŸèƒ½
+    P2DIR &= ~0xC0;      // P0ä¼˜å…ˆçº§æœ€é«˜
 
-    // ÉèÖÃÎª UART Ä£Ê½
-    U0CSR |= 0x80;
+    // è®¾ç½®UARTæ¨¡å¼
+    U0CSR |= 0x80;       // UARTæ¨¡å¼ä½¿èƒ½ï¼ˆéSPIï¼‰
 
-    // ÉèÖÃ²¨ÌØÂÊ
+    // è®¾ç½®æ³¢ç‰¹ç‡
     uart_set_baud(baudrate);
 
-    // ³õÊ¼»¯·¢ËÍºÍ½ÓÊÕÖĞ¶Ï±êÖ¾
-    UTX0IF = 0;
-    URX0IF = 0;
+    // åˆå§‹åŒ–å‘é€å’Œæ¥æ”¶ä¸­æ–­æ ‡å¿—
+    UTX0IF = 0;          // æ¸…é™¤TXä¸­æ–­æ ‡å¿—
+    URX0IF = 0;          // æ¸…é™¤RXä¸­æ–­æ ‡å¿—
 
-    // ÔÊĞí½ÓÊÕ
-    U0CSR |= 0x40;
+    // å¯ç”¨æ¥æ”¶
+    U0CSR |= 0x40;       // æ¥æ”¶å™¨ä½¿èƒ½
 
-    // ¿ªÆô½ÓÊÕÖĞ¶Ï
-    IEN0 |= 0x84;
+    // å¯ç”¨ä¸­æ–­
+    IEN0 |= 0x04;        // è®¾ç½®UART0 RXä¸­æ–­ä½¿èƒ½(URX0IE)
+    EA = 1;              // å…¨å±€ä¸­æ–­ä½¿èƒ½
 }
 
 /**
- * @brief ·¢ËÍ×Ö½Ú
- * @param data Òª·¢ËÍµÄ×Ö½Ú
+ * @brief å‘é€å­—èŠ‚
+ * @param data è¦å‘é€çš„å­—èŠ‚
  */
 void uart_tx_byte(uint8_t data)
 {
-    // µÈ´ı·¢ËÍÍê³É
+    // ç­‰å¾…å‘é€å®Œæˆ
     while (UTX0IF == 0);
     UTX0IF = 0;
 
-    // ·¢ËÍÊı¾İ
+    // å‘é€æ•°æ®
     U0DBUF = data;
 }
 
 /**
- * @brief ·¢ËÍ×Ö·û´®
- * @param data Òª·¢ËÍµÄ×Ö·û´®
- * @param length ×Ö·û´®³¤¶È
+ * @brief å‘é€å­—ç¬¦ä¸²
+ * @param data è¦å‘é€çš„å­—ç¬¦ä¸²
+ * @param length å­—ç¬¦ä¸²é•¿åº¦
  */
-void uart_tx_str(uint8_t *data, uint16_t length)
+void uart_tx_str(const uint8_t *data, uint16_t length)
 {
     for (uint16_t i = 0; i < length; i++)
     {
@@ -76,8 +78,8 @@ void uart_tx_str(uint8_t *data, uint16_t length)
 }
 
 /**
- * @brief ·¢ËÍÕûÊı
- * @param data Òª·¢ËÍµÄÕûÊı
+ * @brief å‘é€æ•´æ•°
+ * @param data è¦å‘é€çš„æ•´æ•°
  */
 void uart_tx_int(int32_t data)
 {
@@ -87,8 +89,8 @@ void uart_tx_int(int32_t data)
 }
 
 /**
- * @brief ·¢ËÍ¸¡µãÊı
- * @param data Òª·¢ËÍµÄ¸¡µãÊı
+ * @brief å‘é€æµ®ç‚¹æ•°
+ * @param data è¦å‘é€çš„æµ®ç‚¹æ•°
  */
 void uart_tx_float(float data)
 {
@@ -98,34 +100,60 @@ void uart_tx_float(float data)
 }
 
 /**
- * @brief ÉèÖÃ²¨ÌØÂÊ
- * @param baudrate ²¨ÌØÂÊ
+ * @brief è®¾ç½®æ³¢ç‰¹ç‡
+ * @param baudrate æ³¢ç‰¹ç‡
  */
 void uart_set_baud(uart_baudrate_t baudrate)
 {
-    // ¸ù¾İ²¨ÌØÂÊ¼ÆËã U0GCR ºÍ U0BAUD µÄÖµ
-    uint32_t baud_div = (32000000 / (baudrate * 16)) - 1;
-    U0GCR = (baud_div >> 8) & 0xFF;
-    U0BAUD = baud_div & 0xFF;
+    // æ ¹æ®ä¸åŒçš„æ³¢ç‰¹ç‡è®¾ç½®U0GCRå’ŒU0BAUD
+    switch (baudrate)
+    {
+        case UART_BAUD_9600:
+            U0GCR &= ~0x1F;
+            U0GCR |= 8;
+            U0BAUD = 59;
+            break;
+        case UART_BAUD_19200:
+            U0GCR &= ~0x1F;
+            U0GCR |= 9;
+            U0BAUD = 59;
+            break;
+        case UART_BAUD_38400:
+            U0GCR &= ~0x1F;
+            U0GCR |= 10;
+            U0BAUD = 59;
+            break;
+        case UART_BAUD_57600:
+            U0GCR &= ~0x1F;
+            U0GCR |= 10;
+            U0BAUD = 216;
+            break;
+        case UART_BAUD_115200:
+        default:
+            U0GCR &= ~0x1F;
+            U0GCR |= 11;
+            U0BAUD = 216;
+            break;
+    }
 }
 
 /**
- * @brief ´®¿Ú½ÓÊÕÖĞ¶Ï·şÎñ³ÌĞò
+ * @brief æ¥æ”¶ä¸­æ–­æœåŠ¡å‡½æ•°
  */
 #pragma vector = URX0_VECTOR
 __interrupt void UART0_ISR(void)
 {
-    URX0IF = 0; // ÇåÖĞ¶Ï±êÖ¾
+    URX0IF = 0; // æ¸…é™¤æ¥æ”¶ä¸­æ–­æ ‡å¿—
     uint8_t data = U0DBUF;
 
-    // ¸üĞÂ×îĞÂÊı¾İºÍ±êÖ¾
+    // å­˜å‚¨æ¥æ”¶åˆ°çš„æ•°æ®
     latest_data = data;
     new_data_flag = 1;
 }
 
 /**
- * @brief »ñÈ¡×îĞÂ½ÓÊÕµ½µÄÊı¾İ
- * @return ×îĞÂ½ÓÊÕµ½µÄÊı¾İ
+ * @brief è·å–æœ€æ–°æ¥æ”¶çš„æ•°æ®
+ * @return æœ€æ–°æ¥æ”¶çš„æ•°æ®
  */
 uint8_t uart_get_latest_data(void)
 {
@@ -133,8 +161,8 @@ uint8_t uart_get_latest_data(void)
 }
 
 /**
- * @brief ¼ì²éÊÇ·ñÓĞĞÂÊı¾İµ½´ï
- * @return 1£ºÓĞĞÂÊı¾İ£»0£ºÎŞĞÂÊı¾İ
+ * @brief æ˜¯å¦æœ‰æ–°æ•°æ®
+ * @return 1æœ‰ï¼Œ0æ²¡æœ‰
  */
 uint8_t uart_has_new_data(void)
 {
@@ -142,7 +170,7 @@ uint8_t uart_has_new_data(void)
 }
 
 /**
- * @brief ÖØÖÃĞÂÊı¾İ±êÖ¾
+ * @brief æ¸…é™¤æ¥æ”¶æ ‡å¿—
  */
 void uart_reset_new_data_flag(void)
 {
