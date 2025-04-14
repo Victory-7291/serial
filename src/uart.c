@@ -69,7 +69,7 @@ void uart_tx_byte(uint8_t data)
  * @param data 要发送的字符串
  * @param length 字符串长度
  */
-void uart_tx_str(const uint8_t *data, uint16_t length)
+void uart_tx_str(uint8_t *data, uint16_t length)
 {
     for (uint16_t i = 0; i < length; i++)
     {
@@ -85,7 +85,7 @@ void uart_tx_int(int32_t data)
 {
     uint8_t buffer[4];
     memcpy(buffer, &data, 4);
-    uart_tx_str(buffer, 4);
+    uart_tx_str((uint8_t *)buffer, 4);
 }
 
 /**
@@ -96,7 +96,7 @@ void uart_tx_float(float data)
 {
     uint8_t buffer[4];
     memcpy(buffer, &data, 4);
-    uart_tx_str(buffer, 4);
+    uart_tx_str((uint8_t *)buffer, 4);
 }
 
 /**
@@ -176,3 +176,5 @@ void uart_reset_new_data_flag(void)
 {
     new_data_flag = 0;
 }
+
+// 文件结束

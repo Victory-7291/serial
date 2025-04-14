@@ -24,25 +24,25 @@ int main(void)
     uart_init(UART_BAUD_115200);
     
     // 发送启动消息
-    uart_tx_str("\r\nUART Demo Started!\r\n", 21);
-    uart_tx_str("Baudrate: 115200\r\n", 18);
+    uart_tx_str((uint8_t *)"\r\nUART Demo Started!\r\n", 21);
+    uart_tx_str((uint8_t *)"Baudrate: 115200\r\n", 18);
 
     while (1)
     {
         // 发送字符串
-        uart_tx_str("Hello, UART!\r\n", 14);
+        uart_tx_str((uint8_t *)"Hello, UART!\r\n", 14);
 
         // 发送整数
         int32_t num = 12345;
-        uart_tx_str("Int: ", 5);
+        uart_tx_str((uint8_t *)"Int: ", 5);
         uart_tx_int(num);
-        uart_tx_str("\r\n", 2);
+        uart_tx_str((uint8_t *)"\r\n", 2);
 
         // 发送浮点数
         float f = 3.14159;
-        uart_tx_str("Float: ", 7);
+        uart_tx_str((uint8_t *)"Float: ", 7);
         uart_tx_float(f);
-        uart_tx_str("\r\n", 2);
+        uart_tx_str((uint8_t *)"\r\n", 2);
 
         // 等待1秒
         delay(1000);
@@ -54,9 +54,9 @@ int main(void)
             uint8_t data = uart_get_latest_data();
             uart_reset_new_data_flag(); // 清除接收数据标志
             
-            uart_tx_str("Received: ", 10);
+            uart_tx_str((uint8_t *)"Received: ", 10);
             uart_tx_byte(data);
-            uart_tx_str("\r\n", 2);
+            uart_tx_str((uint8_t *)"\r\n", 2);
 
             // 处理数据
             process_data(data);
@@ -73,3 +73,5 @@ void process_data(uint8_t data)
     // 简单的数据处理逻辑
     uart_tx_byte(data); // 回传数据
 }
+
+// 文件结束

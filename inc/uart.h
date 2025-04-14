@@ -27,7 +27,7 @@ void uart_tx_byte(uint8_t data);
  * @param data 要发送的字符串
  * @param length 字符串长度
  */
-void uart_tx_str(const uint8_t *data, uint16_t length);
+void uart_tx_str(uint8_t *data, uint16_t length);
 
 /**
  * @brief 发送整数
